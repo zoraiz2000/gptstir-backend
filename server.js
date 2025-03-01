@@ -11,13 +11,24 @@ const port = process.env.PORT || 3000; // Changed from 5000 to 3000
 
 const allowedOrigins = [
   "http://localhost:5173", // Local development
+  "https://gptstir-frontend.vercel.app" // Your deployed frontend
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true, // Allows cookies and headers like Authorization
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// ✅ Explicitly handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 
