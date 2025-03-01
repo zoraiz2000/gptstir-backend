@@ -18,5 +18,10 @@
       "dest": "/server.js",
       "continue": true
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 60
+    }
+  }
 } 
