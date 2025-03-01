@@ -1,3 +1,4 @@
+require("dotenv").config();
 const pool = require('./connection');
 const jwt = require('jsonwebtoken');
 
