@@ -8,16 +8,25 @@ const authMiddleware = require("./middleware/auth");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// More explicit CORS configuration
+// More permissive CORS configuration that specifically allows localhost
 app.use(cors({
-  origin: true, // Reflect the request origin or use an array like ['http://localhost:5173', 'https://your-frontend.com']
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://gptstir.vercel.app'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization']
 }));
 
 // Handle OPTIONS preflight requests
-app.options('*', cors());
+app.options('*', cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://gptstir.vercel.app'],
+  credentials: true
+}));
+
+// Log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'N/A'}`);
+  next();
+});
 
 app.use(express.json({ limit: '1mb' }));
 
@@ -32,11 +41,12 @@ app.use("/api/auth", authRoutes);
 // Protected routes
 app.use("/api/chat", authMiddleware, chatRoutes);
 
-// Export for Vercel serverless deployment
-module.exports = app;
-
-// Only start the server if not in production (Vercel handles this in production)
-if (process.env.NODE_ENV !== 'production') {
+// If running in Vercel
+if (process.env.VERCEL) {
+  // Export for Vercel serverless deployment
+  module.exports = app;
+} else {
+  // Start the server if running locally
   app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });
