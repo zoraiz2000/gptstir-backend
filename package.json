@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "init-db": "node db/init.js",
-    "reset-db": "node db/reset.js"
+    "reset-db": "node db/reset.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
