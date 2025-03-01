@@ -8,7 +8,20 @@ const authMiddleware = require("./middleware/auth");
 const app = express();
 const port = process.env.PORT || 5000; // Changed from 5000 to 3000
 
-app.use(cors());
+// Configure CORS
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',  // Your local frontend
+    'http://localhost:3000',  // Common alternative port
+    // process.env.FRONTEND_URL  // Your production frontend URL (if different)
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Public routes
