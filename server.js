@@ -10,18 +10,18 @@ const port = process.env.PORT || 5000; // Changed from 5000 to 3000
 
 // Configure CORS
 const corsOptions = {
-  origin: [
-    'http://localhost:5173',  // Your local frontend
-    'http://localhost:3000',  // Common alternative port
-    // process.env.FRONTEND_URL  // Your production frontend URL (if different)
-  ],
+  origin: true, // Allow all origins in development
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  preflightContinue: false
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
+
 app.use(express.json());
 
 // Public routes
